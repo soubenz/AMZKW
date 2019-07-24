@@ -10,6 +10,6 @@ import scrapy
 
 class AmazonKeyword(scrapy.Item):
     # define the fields for your item here like:
-    position = scrapy.Field()
+    # position = scrapy.Field()
     text = scrapy.Field()
     pass

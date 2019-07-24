@@ -52,10 +52,15 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
+DOWNLOADER_MIDDLEWARES = {
+'scrapy_webshare.middleware.WebshareMiddleware': 610
 #    'kwg.middlewares.KwgDownloaderMiddleware': 543,
-#}
+}
 
+LOG_FORMAT = '\x1b[0;0;34m%(asctime)s\x1b[0;0m \x1b[0;0;36m[%(name)s]\x1b[0;0m \x1b[0;0;31m%(levelname)s\x1b[0;0m: %(message)s'
+# WEBSHARE_USER = 'ygnqpnzf'
+# WEBSHARE_ENABLED = True
+# WEBSHARE_PASSWORD = '2nnfe2m3ogxu'
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
