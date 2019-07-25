@@ -8,7 +8,7 @@
 import scrapy
 
 
-class AmazonKeyword(scrapy.Item):
+class Keyword(scrapy.Item):
     # define the fields for your item here like:
     # position = scrapy.Field()
     text = scrapy.Field()

@@ -4,29 +4,21 @@ import scrapy
 
 from scrapy.http import Request
 from scrapy.shell import inspect_response
-import sys
 import json
-import requests
-from kwg.items import AmazonKeyword
-import time
-import hashlib
-from random import randint
-import re
-from datetime import date
-from collections import OrderedDict
-from pprint import pprint
+from kwg.items import Keyword
 
 
 
-class HashtagCrawler(scrapy.Spider):
-    name = 'generator'
+
+class AmazonCrawler(scrapy.Spider):
+    name = 'amazon'
     custom_settings = {
         "DEPTH_PRIORITY" : 1,
         "SCHEDULER_DISK_QUEUE" : 'scrapy.squeues.PickleFifoDiskQueue',
         "SCHEDULER_MEMORY_QUEUE" : 'scrapy.squeues.FifoMemoryQueue'
     }
     def __init__(self, keyword="milk", limit=3, *args, **kwargs):
-        super(HashtagCrawler, self).__init__(*args, **kwargs)
+        super(AmazonCrawler, self).__init__(*args, **kwargs)
         # pass
         self.keyword = keyword.lower()
         self.headers = {
@@ -51,14 +43,11 @@ class HashtagCrawler(scrapy.Spider):
             return
         else:
             for kw in js["suggestions"]:
-                
-                item = AmazonKeyword()
-
+                item = Keyword()
                 if kw['value'] != keyword and self.position < self.limit:
 
                     self.position += 1
                     kwd = kw['value']
-                    # self.logger.info(kwd)
                     item["text"] = kwd
                     level += 1
                     meta = {"keyword": kw['value'], "level": level }
@@ -66,9 +55,3 @@ class HashtagCrawler(scrapy.Spider):
                     yield item
                     if self.position < self.limit:
                         yield Request(url, self.generate, headers=self.headers, meta=meta)
-            
-
-            # # print(position)
-            # for kw in js["suggestions"]:
-            #     # if position < self.limit:
-                
