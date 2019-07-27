@@ -5,13 +5,14 @@ const request = require('request');
 const scrapingController = {
     run(req, res) {
         let keyword = req.query.keyword;
+        let type = req.query.type;
         let limit = req.query.limit;
         let scrapHost = process.env.SCRAP_HOST;
         let scrapEndpoint = process.env.SCRAP_ENDPOINT;
         let options = {
             url: 'http://' + scrapHost + '/' + scrapEndpoint,
             method: 'POST',
-            body: '{"spider_name": "generator","start_requests": true,"keyword":"' + keyword + '", "limit": ' + limit + '}'
+            body: '{"spider_name":"' + type + '", "start_requests": true, "keyword": "' + keyword + '", "limit": ' + limit + '}'
 
         };
         request(options).pipe(res);
