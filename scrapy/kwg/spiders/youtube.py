@@ -11,10 +11,11 @@ from ast import literal_eval
 class YoutubeCrawler(scrapy.Spider):
     name = 'youtube'
     custom_settings = {
-        "DEPTH_PRIORITY" : 1,
-        "SCHEDULER_DISK_QUEUE" : 'scrapy.squeues.PickleFifoDiskQueue',
-        "SCHEDULER_MEMORY_QUEUE" : 'scrapy.squeues.FifoMemoryQueue'
+        "DEPTH_PRIORITY": 1,
+        "SCHEDULER_DISK_QUEUE": 'scrapy.squeues.PickleFifoDiskQueue',
+        "SCHEDULER_MEMORY_QUEUE": 'scrapy.squeues.FifoMemoryQueue'
     }
+
     def __init__(self, keyword="milk", limit=3000, *args, **kwargs):
         super(YoutubeCrawler, self).__init__(*args, **kwargs)
         # pass
@@ -27,11 +28,12 @@ class YoutubeCrawler(scrapy.Spider):
         }
         self.url = "https://clients1.google.com/complete/search?client=youtube&hl=en&gl=fr&gs_rn=64&gs_ri=youtube&ds=yt&cp=8&gs_id=w&q={}"
         self.limit = limit
-        self.position = 0
+        self.position = 1
+        self.seen = set()
 
     def start_requests(self):
         url = self.url.format(self.keyword)
-        yield Request(url, self.generate, headers=self.headers, meta={"keyword": self.keyword, "position":0})
+        yield Request(url, self.generate, headers=self.headers, meta={"keyword": self.keyword})
 
     def generate(self, response):
         raw = response.body.decode('utf-8').strip('window.google.ac.h').strip('()')
@@ -44,12 +46,18 @@ class YoutubeCrawler(scrapy.Spider):
         else:
             for kw in kws:
                 item = Keyword()
-                if self.position < self.limit:
-                    self.position += 1
+                if self.position <= self.limit:
+
                     kwd = kw[0]
                     item["text"] = kwd
                     meta = {"keyword": kwd}
-                    yield item
-                    if self.position < self.limit:
+                    if item['text'] in self.seen:
+                        pass
+                    else:
+                        self.seen.add(item['text'])
+                        self.position += 1
+                        yield item
+
+                    if self.position <= self.limit:
                         url = self.url.format(kwd)
                         yield Request(url, self.generate, headers=self.headers, meta=meta)
