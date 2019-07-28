@@ -9,7 +9,7 @@
             <b-input placeholder="Seed Keyword" size="is-large" v-model="seedKeyword" expanded></b-input>
             <b-button type="is-primary" @click="getKeywords(seedKeyword, source, size)" size="is-large" :disabled="!startButton">Start</b-button>
             <!-- <b-button type="is-primary" @click="getID" size="is-large">test</b-button> -->
-            <!-- <b-button type="is-primary" @click="getKeywords(seedKeyword, 'amazon',10)" size="is-large">keywords</b-button> -->
+            <b-button type="is-primary" @click="getMetrics(['milk', 'jaws'])" size="is-large">keywords</b-button>
           </b-field>
         </template>
         <template v-else>
@@ -47,12 +47,7 @@
             <option value="100">100</option>
           </b-select>
         </b-field>
-        <b-checkbox
-          size="is-medium"
-          custom-class="is-large"
-          type="is-info"
-          class="title column is-one-quarter"
-        >Only longtails</b-checkbox>
+
       </div>
       <div>
         <b-notification
@@ -61,6 +56,18 @@
           :active.sync="isLoading"
         >Please wait while the tool is generating keywords</b-notification>
       </div>
+
+    <b-field grouped group-multiline>
+            <b-select v-model="perPage" size="is-medium" :disabled="!isPaginated">
+                <option value="5">5 per page</option>
+                <option value="10">10 per page</option>
+                <option value="15">15 per page</option>
+                <option value="20">20 per page</option>
+            </b-select>
+            <div class="control is-flex">
+                <b-switch size="is-medium"  class="title" v-model="isPaginated">Longtails Only</b-switch>
+            </div>
+      </b-field>
  <b-table
           :data="data"
           checked-rows.sync="checkedRows"
@@ -68,7 +75,7 @@
           :checkbox-position="left"
           paginated
           :current-page.sync="currentPage"
-          paginationPosition="bottom"
+          paginationPosition="top"
           aria-next-label="Next page"
           aria-previous-label="Previous page"
           aria-page-label="Page"
@@ -88,14 +95,7 @@
             </template>
            
    </b-table>
-   <b-field grouped group-multiline>
-            <b-select v-model="perPage" :disabled="!isPaginated">
-                <option value="5">5 per page</option>
-                <option value="10">10 per page</option>
-                <option value="15">15 per page</option>
-                <option value="20">20 per page</option>
-            </b-select>
-      </b-field>
+   
     </div>
     <!-- <template v-else>
     </template>-->
@@ -155,7 +155,7 @@ export default {
     async getMetrics(keywords) {
       let params = {
         keywords: keywords,
-    }
+      }
       api
         .get("/metrics", {params: params})
         .then(data => {
