@@ -19,6 +19,7 @@ const scrapingController = {
     },
     metrics(req, res) {
         let keywords = req.query.keywords;
+        console.log(keywords);
         let KRevApiKey = process.env.KR_API_KEY;
         let qs = {
             apiKey: KRevApiKey,
@@ -26,7 +27,7 @@ const scrapingController = {
 
 
         }
-        qs['kw'] = keywords.split(',')
+        qs['kw'] = keywords
         // qs['kw'] = ['milk', 'java']
         let options = {
             url: 'https://keywordseverywhere.com/service/1/getKeywordData.php',

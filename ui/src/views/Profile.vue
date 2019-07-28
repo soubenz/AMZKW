@@ -105,10 +105,7 @@
 
 
 <script>
-import database from "@/services/database";
 import api from "@/services/api";
-// import APIService from "@/services/api";
-import axios from "axios";
 
 export default {
   name: "profile",
@@ -131,20 +128,14 @@ export default {
       this.isLoading = state;
       console.log(this.isLoading);
     },
-    getID() {
-      let result = database.getID();
-      // console.log(result);
-    },
+   
     initForm() {
       this.seedKeyword = null,
       this.source = null,
       this.size = 20
       // this.data = {}
 
-    }
-
-
-    ,
+    },
     async getKeywords(keyword, type, limit) {
       this.isLoading = true
       let params = {
@@ -159,6 +150,19 @@ export default {
           console.log(data);
           this.isLoading = false
           this.initForm()
+        });
+    },
+    async getMetrics(keywords) {
+      let params = {
+        keywords: keywords,
+    }
+      api
+        .get("/metrics", {params: params})
+        .then(data => {
+          // this.data = data.data.items
+          console.log(data);
+          // this.isLoading = false
+          // this.initForm()
         });
     }
   },
