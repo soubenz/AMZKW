@@ -49,12 +49,15 @@ database.signOut = async () => {
 
 }
 
-database.getID = () => {
-    try {
-        return firebase.auth().currentUser.getIdToken( /* forceRefresh */ true)
-    } catch (error) {
-        return error
-    }
+database.getID = async  () => {
+    
+        await firebase.auth().currentUser.getIdToken( /* forceRefresh */ true).then((idToken) => {
+            // console.log(idToken);
+            return idToken;
+        })
+  
+
+
     // await firebase.auth().currentUser.getIdToken( /* forceRefresh */ true).then(function (idToken) {
     //     // Send token to your backend via HTTPS
     //     store.commit('setCurrentUser', null)

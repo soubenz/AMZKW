@@ -33,3 +33,14 @@ firebase.auth().onAuthStateChanged(user => {
   }
   initialize()
 })
+
+
+
+axios.interceptors.request.use(async config => {
+  const token = await firebase.auth().currentUser.getIdToken();
+  config.headers.Authorization = `Bearer ${token}`
+  console.log(config.headers.Authorization)
+  return config
+}, (error) => {
+  return Promise.reject(error)
+})

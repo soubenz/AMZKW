@@ -29,11 +29,12 @@ class AmazonCrawler(scrapy.Spider):
         }
         self.url = "https://completion.amazon.com/api/2017/suggestions?page-type=Gateway&lop=en_US&site-variant=desktop&client-info=amazon-search-ui&mid=ATVPDKIKX0DER&alias=aps&suggestion-type=keyword&b2b=1&prefix={}"
         self.limit = limit
-        self.position = 0
+        self.position = 1
+        self.seen = set()
 
     def start_requests(self):
         url = self.url.format(self.keyword)
-        yield Request(url, self.generate, headers=self.headers, meta={"keyword": self.keyword, "position":0})
+        yield Request(url, self.generate, headers=self.headers, meta={"keyword": self.keyword})
 
     def generate(self, response):
         js = json.loads(response.text)
@@ -44,14 +45,18 @@ class AmazonCrawler(scrapy.Spider):
         else:
             for kw in js["suggestions"]:
                 item = Keyword()
-                if kw['value'] != keyword and self.position < self.limit:
+                if kw['value'] != keyword and self.position <= self.limit:
 
-                    self.position += 1
                     kwd = kw['value']
                     item["text"] = kwd
                     level += 1
                     meta = {"keyword": kw['value'], "level": level }
                     url = self.url.format(kwd)
-                    yield item
-                    if self.position < self.limit:
+                    if item['text'] in self.seen:
+                        pass
+                    else:
+                        self.seen.add(item['text'])
+                        self.position += 1
+                        yield item
+                    if self.position <= self.limit:
                         yield Request(url, self.generate, headers=self.headers, meta=meta)
