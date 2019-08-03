@@ -9,7 +9,7 @@ let router = new Router({
   routes: [{
       path: '/',
       // name: '',
-      redirect: 'profile'
+      redirect: 'app'
     },
     {
       path: '/about',
@@ -32,9 +32,9 @@ let router = new Router({
 
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: () => import('./views/Profile.vue'),
+      path: '/app',
+      name: 'app',
+      component: () => import('./views/App.vue'),
       meta: {
         auth: true
       }

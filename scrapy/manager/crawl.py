@@ -47,8 +47,9 @@ class MyCrawlResource(CrawlResource):
 
 
 class MyCrawlManager(CrawlManager):
-    def return_items(self, result):
-        results = super().return_items(result)
-        items = [item['text'] for item in results['items']]
-        results.update({'items': items})
-        return results
+    pass
+    # def return_items(self, result):
+    #     results = super().return_items(result)
+    #     items = [item['text'] for item in results['items']]
+    #     results.update({'items': items})
+    #     return results

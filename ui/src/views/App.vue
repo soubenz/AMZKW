@@ -8,8 +8,8 @@
           <b-field>
             <b-input placeholder="Seed Keyword" size="is-large" v-model="seedKeyword" expanded></b-input>
             <b-button type="is-primary" @click="getKeywords(seedKeyword, source, size)" size="is-large" :disabled="!startButton">Start</b-button>
-            <!-- <b-button type="is-primary" @click="getID" size="is-large">test</b-button> -->
-            <b-button type="is-primary" @click="getMetrics(['milk', 'jaws'])" size="is-large">keywords</b-button>
+            <!-- <b-button type="is-primary" @click="testGoogle" size="is-large">test</b-button> -->
+            <!-- <b-button type="is-primary" @click="getMetrics(['milk', 'jaws'])" size="is-large">keywords</b-button> -->
           </b-field>
         </template>
         <template v-else>
@@ -29,6 +29,7 @@
           custom-class="is-medium"
         >
           <b-select placeholder="Select a source" v-model="source" size="is-medium" required>
+            <option value="google">Google</option>
             <option value="amazon">Amazon</option>
             <option value="etsy">Etsy</option>
             <option value="youtube">Youtube</option>
@@ -58,21 +59,21 @@
       </div>
 
     <b-field grouped group-multiline>
-            <b-select v-model="perPage" size="is-medium" :disabled="!isPaginated">
+            <b-select v-model="perPage" size="is-medium" :disabled="false">
                 <option value="5">5 per page</option>
                 <option value="10">10 per page</option>
                 <option value="15">15 per page</option>
                 <option value="20">20 per page</option>
             </b-select>
             <div class="control is-flex">
-                <b-switch size="is-medium"  class="title" v-model="isPaginated">Longtails Only</b-switch>
+                <b-switch size="is-medium"  class="title" >Longtails Only</b-switch>
             </div>
       </b-field>
- <b-table
-          :data="data"
+      <b-table
+          :data="items"
           checked-rows.sync="checkedRows"
           checkable
-          :checkbox-position="left"
+          checkbox-position="left"
           paginated
           :current-page.sync="currentPage"
           paginationPosition="top"
@@ -83,12 +84,24 @@
           >
 
             <template slot-scope="props">
-                <b-table-column field="id" width="60" numeric class="has-text-weight-bold is-size-4">
-                    {{ data.indexOf(props.row) + 1 }}
+                <b-table-column  width="60" numeric label="#" class="has-text-weight-bold is-size-6">
+                    {{ items.indexOf(props.row) + 1 }}
                 </b-table-column>
 
-                <b-table-column field="keyword"  class="has-text-weight-bold is-size-4">
-                    {{ props.row }}
+                <b-table-column field="keyword" label="Keyword" class="has-text-weight-bold is-size-6">
+                    {{ props.row.keyword }}
+                </b-table-column>
+                <b-table-column field="cpc" label="Bid" class="has-text-weight-bold is-size-6">
+                    {{ props.row.cpc }}
+                </b-table-column>
+                <b-table-column  label="Words" class="has-text-weight-bold is-size-6">
+                    {{ props.row.keyword.split(' ').length }}
+                </b-table-column>
+                <b-table-column field="vol" label="Search Volume" class="has-text-weight-bold is-size-6">
+                    {{ props.row.vol }}
+                </b-table-column>
+                <b-table-column field="competition" label="Adword Competition" class="has-text-weight-bold is-size-6">
+                    {{ props.row.competition }}
                 </b-table-column>
 
                
@@ -106,9 +119,11 @@
 
 <script>
 import api from "@/services/api";
+// import user from "@/services/adword";
+
 
 export default {
-  name: "profile",
+  name: "app",
   computed: {
     currentUser() {
       return this.$store.state.currentUser;
@@ -128,30 +143,64 @@ export default {
       this.isLoading = state;
       console.log(this.isLoading);
     },
-   
+//     testGoogle(){
+     
+//     let campaignService = user.getService('CampaignService', 'v201809')
+
+//     //create selector
+//     let selector = {
+//         fields: ['Id', 'Name'],
+//         ordering: [{field: 'Name', sortOrder: 'ASCENDING'}],
+//         paging: {startIndex: 0, numberResults:100}
+//     }
+
+//     campaignService.get({serviceSelector: selector}, (error, result) => {
+//         console.log(error, result);
+// })
+//     },
     initForm() {
       this.seedKeyword = null,
       this.source = null,
       this.size = 20
-      // this.data = {}
+      this.items = []
 
     },
     async getKeywords(keyword, type, limit) {
       this.isLoading = true
+      this.initForm()
       let params = {
         keyword: keyword,
         type: type,
         limit: limit
       }
-      api
-        .get("/run", {params: params})
+      api.get("/run", {params: params})
         .then(data => {
-          this.data = data.data.items
-          console.log(data);
+          let items = data.data.items
+          // console.log(data);
           this.isLoading = false
-          this.initForm()
+          let params = {
+                keywords: items.map((obj) => {return obj.text}),
+              }
+          api.get("/metrics", {params: params})
+        .then(data => {
+          // this.data = data.data.items
+          this.items = Object.values(data.data.data)
+          console.log(data);
+          // this.isLoading = false
+          // this.initForm()
+        });
+          // let metrics = this.getMetrics(items.map((obj) => {return obj.text}));
+
+          // console.log(metrics);
+          // // this.data = Object.values(metrics)
+          // this.data = metrics;
+          // // this.data.map((obj) => { const merged = {}});
+          // console.log(this.data);
         });
     },
+
+
+
     async getMetrics(keywords) {
       let params = {
         keywords: keywords,
@@ -160,7 +209,8 @@ export default {
         .get("/metrics", {params: params})
         .then(data => {
           // this.data = data.data.items
-          console.log(data);
+          data = data.data.data
+          // console.log(data);
           // this.isLoading = false
           // this.initForm()
         });
@@ -172,7 +222,7 @@ export default {
       seedKeyword: null,
       source: null,
       size: 20,
-      items: null, 
+      items: [], 
       data: [],
       perPage: 20,
       currentPage: 1,
