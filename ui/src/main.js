@@ -6,7 +6,7 @@ import firebase from 'firebase'
 import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 import axios from 'axios'
-
+import '@mdi/font/css/materialdesignicons.css'
 Vue.config.productionTip = false
 
 Vue.use(Buefy)
@@ -15,6 +15,9 @@ let app
 const initialize = () => {
   if (!app) {
     new Vue({
+      icons: {
+        iconfont: 'mdi', // default - only for display purposes
+      },
       router,
       store,
       render: h => h(App)
