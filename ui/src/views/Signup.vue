@@ -1,7 +1,7 @@
 <template>
   <div class="columns">
     <div class="column is-4 is-offset-4">
-      <h1>Sign up></h1>
+      <h1>Sign up</h1>
 
       <form @submit.prevent="signUp">
         <div class="field">
@@ -45,8 +45,3 @@ export default {
   }
 };
 </script>
-
-
-<style>
-@import "~bulma/css/bulma.css";
-</style>
