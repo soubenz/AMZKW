@@ -1,0 +1,9 @@
+scrapyrt:
+    build: ./scrapy
+    command: scrapyrt -i 0.0.0.0 -p 9080 -S manager.config
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./scrapy:/data
+    working_dir: /data
+    restart: always
