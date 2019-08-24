@@ -2,7 +2,7 @@
   <section class="section">
     <!-- <div class="container has-background-grey-light"> -->
     <div class="container">
-      <h1>Keyword Generator</h1>
+      <h1 class="has-text-weight-bold">Keyword Generator</h1>
 
       <div>
         <template v-if="!isLoading">

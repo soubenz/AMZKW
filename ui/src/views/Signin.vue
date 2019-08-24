@@ -1,7 +1,7 @@
 <template>
   <div class="columns">
     <div class="column is-4 is-offset-4">
-      <h1>Sign in</h1>
+      <h1 class="has-text-weight-bold">Signin</h1>
 
       <form @submit.prevent="signIn">
         <div class="field">

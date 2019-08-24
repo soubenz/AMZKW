@@ -1,7 +1,7 @@
 <template>
   <div class="columns">
     <div class="column is-4 is-offset-4">
-      <h1>Sign up</h1>
+      <h1 class="has-text-weight-bold">Signup</h1>
 
       <form @submit.prevent="signUp">
         <div class="field">
@@ -40,6 +40,7 @@ export default {
         this.error = result.message;
       } else {
         console.log("User is created");
+        this.$router.push("/app");
       }
     }
   }
