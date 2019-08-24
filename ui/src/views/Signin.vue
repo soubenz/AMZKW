@@ -1,7 +1,7 @@
 <template>
   <div class="columns">
     <div class="column is-4 is-offset-4">
-      <h1>Sign in></h1>
+      <h1>Sign in</h1>
 
       <form @submit.prevent="signIn">
         <div class="field">
@@ -40,14 +40,9 @@ export default {
         this.error = result.message;
       } else {
         console.log("User is signed in");
-        this.$router.push("/profile");
+        this.$router.push("/app");
       }
     }
   }
 };
 </script>
-
-
-<style>
-@import "~bulma/css/bulma.css";
-</style>

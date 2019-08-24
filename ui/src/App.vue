@@ -1,50 +1,41 @@
 <template>
   <div id="app">
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="https://bulma.io">
-          <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
-        </a>
+    <!-- <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css"> -->
+    <b-navbar>
+        <template slot="brand">
+            <b-navbar-item href="/">
+                <img
+                    src="https://raw.githubusercontent.com/buefy/buefy/dev/static/img/buefy-logo.png"
+                    alt="Lightweight UI components for Vue.js based on Bulma"
+                >
+            </b-navbar-item>
+        </template>
+        <template slot="start">
+            <b-navbar-item href="#">
+                About
+            </b-navbar-item>
+        </template>
 
-        <a
-          role="button"
-          class="navbar-burger burger"
-          aria-label="menu"
-          aria-expanded="false"
-          data-target="navbarBasicExample"
-        >
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
+        <template slot="end">
 
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-          <a class="navbar-item">Home</a>
-        </div>
-
-        <div class="navbar-end">
-          <div class="navbar-item">
             <div class="buttons">
-              <template v-if="!currentUser">
+              <template  v-if="!currentUser">
                 <b-button type="is-primary">
-                  <router-link to="/signup">Sign Up</router-link>
+                  <router-link  class="navbar-item" to="/signup">Sign Up</router-link>
                 </b-button>
                 <b-button type="is-light">
-                  <router-link to="/signin">Sign In</router-link>
+                  <router-link class="navbar-item"  to="/signin">Sign In</router-link>
                 </b-button>
               </template>
               <template v-else>
-                <p>{{ currentUser.email}}</p>
-                <b-button type="is-danger" @click="signOut">Sign out</b-button>
+                <p  class="navbar-item">{{ currentUser.email}}</p>
+                <b-button  class="navbar-item" type="is-danger" @click="signOut">Sign out</b-button>
               </template>
               <!-- <strong>Sign up</strong> -->
-            </div>
+
           </div>
-        </div>
-      </div>
-    </nav>
+        </template>
+    </b-navbar>
 
     <router-view />
   </div>
