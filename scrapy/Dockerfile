@@ -1,0 +1,20 @@
+FROM python:3.5-slim
+
+RUN apt-get update -qq && \
+    apt-get install -qy git curl unzip python-setuptools iputils-ping wget lsof  \
+    gnupg2 ltrace strace telnet vim libappindicator1 fonts-liberation xvfb \ 
+    && apt install -qy gcc libdbus-glib-1-2 && \
+    rm -rf /var/lib/apt/lists/*
+
+
+RUN mkdir -p /app
+WORKDIR /app
+
+# COPY ./requirements.txt /app/requirements.txt
+
+COPY . /app
+WORKDIR /app
+RUN pip3 install --no-cache-dir -r requirements.txt
+# ENV PYTHONPATH="$PYTHONPATH:/app"
+EXPOSE 9080
+# CMD ["scrapyrt", "-i", "0.0.0.0", "-S", "manager.config"]
