@@ -34,7 +34,7 @@ let router = new Router({
     {
       path: '/app',
       name: 'app',
-      component: () => import('./views/App.vue'),
+      component: () => import('./views/Home.vue'),
       meta: {
         auth: true
       }
