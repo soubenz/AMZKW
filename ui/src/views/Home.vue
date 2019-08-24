@@ -1,26 +1,41 @@
 <template>
   <section class="section">
     <!-- <div class="container has-background-grey-light"> -->
-    <div class="container ">
+    <div class="container">
       <h1>Keyword Generator</h1>
-     
-      <div>
 
+      <div>
         <template v-if="!isLoading">
           <b-field>
             <b-input placeholder="Seed Keyword" size="is-large" v-model="seedKeyword" expanded></b-input>
-            <b-button type="is-primary" @click="getKeywords(seedKeyword, source, size)" size="is-large" :disabled="!startButton">Start</b-button>
-             <div>
-                <json-csv  :data="exportCSV">
-            <b-button type="is-primary" size="is-large" :disabled="!checkedRows.length" v-show="items.length>0">Export CSV</b-button>
-                </json-csv>
+            <b-button
+              type="is-primary"
+              @click="getKeywords(seedKeyword, source, size)"
+              size="is-large"
+              :disabled="!startButton"
+            >Start</b-button>
+            <div>
+              <json-csv :data="exportCSV">
+                <b-button
+                  type="is-primary"
+                  size="is-large"
+                  :disabled="!checkedRows.length"
+                  v-show="items.length>0"
+                >Export CSV</b-button>
+              </json-csv>
             </div>
             <!-- <b-button type="is-primary" @click="getMetrics(['milk', 'jaws'])" size="is-large">keywords</b-button> -->
           </b-field>
         </template>
         <template v-else>
           <b-field>
-            <b-input placeholder="Generating keywords ..." size="is-large" loading expanded disabled></b-input>
+            <b-input
+              placeholder="Generating keywords ..."
+              size="is-large"
+              loading
+              expanded
+              disabled
+            ></b-input>
             <b-button type="is-danger" @click="isLoading = !isLoading" size="is-large">Stop</b-button>
           </b-field>
         </template>
@@ -54,7 +69,6 @@
             <option value="100">100</option>
           </b-select>
         </b-field>
-
       </div>
       <div>
         <b-notification
@@ -63,80 +77,98 @@
           :active.sync="isLoading"
         >Please wait while the tool is generating keywords</b-notification>
       </div>
-               
-    <b-field grouped group-multiline v-show="items.length > 0">
-            <b-select v-model="perPage" size="is-medium" >
-                <option value="10">10 per page</option>
-                <option value="20">20 per page</option>
-                <option value="30">30 per page</option>
-                <option value="50">50 per page</option>
-            </b-select>
-            <!-- <div class="control is-flex">
+
+      <b-field grouped group-multiline v-show="items.length > 0">
+        <b-select v-model="perPage" size="is-medium">
+          <option value="10">10 per page</option>
+          <option value="20">20 per page</option>
+          <option value="30">30 per page</option>
+          <option value="50">50 per page</option>
+        </b-select>
+        <!-- <div class="control is-flex">
                 <b-switch size="is-medium"  class="title" >Longtails Only</b-switch>
-            </div> -->
+        </div>-->
       </b-field>
       <b-table
-          :data="items"
-          :per-page="perPage"
-          :checked-rows.sync="checkedRows"
-          checkable
-          checkbox-position="left"
-          paginated
-          default-sort-direction="desc"
-          sort-icon="arrow-down"
-          sort-icon-size="is-small"
-          default-sort="position"
-          :current-page.sync="currentPage"
-          paginationPosition="top"
-          aria-next-label="Next page"
-          aria-previous-label="Previous page"
-          aria-page-label="Page"
-          aria-current-label="Current page"
-          v-show="items.length > 0"
-          >
+        :data="items"
+        :per-page="perPage"
+        :checked-rows.sync="checkedRows"
+        checkable
+        checkbox-position="left"
+        paginated
+        default-sort-direction="desc"
+        sort-icon="arrow-down"
+        sort-icon-size="is-small"
+        default-sort="position"
+        :current-page.sync="currentPage"
+        paginationPosition="top"
+        aria-next-label="Next page"
+        aria-previous-label="Previous page"
+        aria-page-label="Page"
+        aria-current-label="Current page"
+        v-show="items.length > 0"
+      >
+        <template slot-scope="props">
+          <b-table-column
+            width="60"
+            numeric
+            field="position"
+            label="#"
+            class="has-text-weight-bold is-size-6"
+          >{{ items.indexOf(props.row) + 1 }}</b-table-column>
 
-            <template slot-scope="props">
-                <b-table-column  width="60" numeric field="position" :custom-sort="sortInt" label="#" sortable class="has-text-weight-bold is-size-6">
-                    {{ items.indexOf(props.row) + 1 }}
-                </b-table-column>
-
-                <b-table-column field="keyword" label="Keyword" :custom-sort="sortInt" sortable class="has-text-weight-bold is-size-6">
-                    {{ props.row.keyword }}
-                </b-table-column>
-                <b-table-column field="cpc" label="Bid" sortable class="has-text-weight-bold is-size-6">
-                    {{ props.row.cpc }}
-                </b-table-column>
-                <b-table-column  label="Words" field="keyword" :custom-sort="sortInt" sortable class="has-text-weight-bold is-size-6">
-                    {{ props.row.keyword.split(' ').length }}
-                </b-table-column>
-                <b-table-column field="vol" label="Search Volume"  sortable class="has-text-weight-bold is-size-6">
-                    {{ props.row.vol }}
-                </b-table-column>
-                <b-table-column field="competition" label="Adword Competition" sortable  class="has-text-weight-bold is-size-6">
-                    {{ props.row.competition }}
-                </b-table-column>
-
-               
-            </template>
-             <template slot="top-left">
-                        <b>Total checked</b>: {{ checkedRows.length }}
-                    </template>
-           
-   </b-table>
-   
+          <b-table-column
+            field="keyword"
+            label="Keyword"
+            sortable
+            class="has-text-weight-bold is-size-6"
+          >{{ props.row.keyword }}</b-table-column>
+          <b-table-column
+            field="cpc"
+            label="Bid"
+            sortable
+            class="has-text-weight-bold is-size-6"
+          >{{ props.row.cpc }}</b-table-column>
+          <b-table-column
+            label="Words"
+            field="keyword"
+            :custom-sort="lengthSort"
+            numeric
+            sortable
+            class="has-text-weight-bold is-size-6"
+          >{{ props.row.keyword.split(' ').length }}</b-table-column>
+          <b-table-column
+            field="vol"
+            label="Search Volume"
+            sortable
+            numeric
+            :custom-sort="volumeSort"
+            class="has-text-weight-bold is-size-6"
+          >{{ props.row.vol }}</b-table-column>
+          <b-table-column
+            field="competition"
+            label="Adword Competition"
+            numeric
+            sortable
+            class="has-text-weight-bold is-size-6"
+          >{{ props.row.competition }}</b-table-column>
+        </template>
+        <template slot="top-left">
+          <b>Total checked</b>
+          : {{ checkedRows.length }}
+        </template>
+      </b-table>
     </div>
     <!-- <template v-else>
     </template>-->
-
   </section>
 </template>
 
 
 <script>
 import api from "@/services/api";
-import JsonCsv from 'vue-json-csv'
+import JsonCsv from "vue-json-csv";
 // import user from "@/services/adword";
-
 
 export default {
   name: "app",
@@ -144,123 +176,123 @@ export default {
     JsonCsv
   },
   computed: {
-   exportCSV(){
-      let exported =  this.checkedRows.reduce(
-        (acc, cur) => { const obj = {}
-        obj['position'] = this.items.indexOf(cur) + 1;
-        obj['cpc'] = cur['cpc']; 
-        obj['keyword'] = cur['keyword']
-        obj['volume'] = cur['vol']
-        obj['competition'] = cur['competition']
-        obj['words'] = cur['keyword'].split(' ').length
+    exportCSV() {
+      let exported = this.checkedRows.reduce((acc, cur) => {
+        const obj = {};
+        obj["position"] = this.items.indexOf(cur) + 1;
+        obj["cpc"] = cur["cpc"];
+        obj["keyword"] = cur["keyword"];
+        obj["volume"] = cur["vol"];
+        obj["competition"] = cur["competition"];
+        obj["words"] = cur["keyword"].split(" ").length;
 
-        acc.push(obj)
-        return acc
-        }, []);
-        return exported
-      console.log(exported)
-
+        acc.push(obj);
+        return acc;
+      }, []);
+      return exported;
+      console.log(exported);
     },
     currentUser() {
       return this.$store.state.currentUser;
     },
-    startButton(){
-      if(this.seedKeyword && this.source && this.size ){
-      return true}
-      else {
-        return false
+    startButton() {
+      if (this.seedKeyword && this.source && this.size) {
+        return true;
+      } else {
+        return false;
       }
-    },
-
-  }
-  ,
-
-  
+    }
+  },
   methods: {
     setIsLoading(state) {
       this.isLoading = state;
       console.log(this.isLoading);
     },
-    sortInt(a,b, isAsc){
-      if (isAsc) {
-      return a - b;
-    } else {
-      return b - a;
-    }
-
+    lengthSort(a, b, isAsc) {
+      return isAsc
+        ? a.keyword.split(" ").length - b.keyword.split(" ").length
+        : b.keyword.split(" ").length - a.keyword.split(" ").length;
     },
-//     testGoogle(){
-     
-//     let campaignService = user.getService('CampaignService', 'v201809')
+    volumeSort(a, b, isAsc) {
+      return isAsc
+        ? Number(a.vol) - Number(b.vol)
+        : Number(b.vol) - Number(a.vol);
+    },
+    positionSort(a, b, isAsc) {
+      return isAsc
+        ? Number(a.vol) - Number(b.vol)
+        : Number(b.vol) - Number(a.vol);
+    },
+    numberSort(a, b, isAsc, key) {
+      return isAsc ? a[key] - b[key] : b[key] - a[key];
+    },
+    //     testGoogle(){
 
-//     //create selector
-//     let selector = {
-//         fields: ['Id', 'Name'],
-//         ordering: [{field: 'Name', sortOrder: 'ASCENDING'}],
-//         paging: {startIndex: 0, numberResults:100}
-//     }
+    //     let campaignService = user.getService('CampaignService', 'v201809')
 
-//     campaignService.get({serviceSelector: selector}, (error, result) => {
-//         console.log(error, result);
-// })
-//     },
+    //     //create selector
+    //     let selector = {
+    //         fields: ['Id', 'Name'],
+    //         ordering: [{field: 'Name', sortOrder: 'ASCENDING'}],
+    //         paging: {startIndex: 0, numberResults:100}
+    //     }
+
+    //     campaignService.get({serviceSelector: selector}, (error, result) => {
+    //         console.log(error, result);
+    // })
+    //     },
     initForm() {
-      this.seedKeyword = null,
-      this.source = null,
-      this.size = 20,
-      this.items = []
+      (this.seedKeyword = null),
+        (this.source = null),
+        (this.size = 20),
+        (this.items = []);
       // this.checkedRows = []
-
     },
     async getKeywords(keyword, type, limit) {
-      this.isLoading = true
-      this.initForm()
+      this.isLoading = true;
+      this.initForm();
       let params = {
         keyword: keyword,
         type: type,
         limit: limit
-      }
-      api.get("/run", {params: params})
-        .then(data => {
-          let items = data.data.items
-          // console.log(data);
-          this.isLoading = false
-          let params = {
-                keywords: items.map((obj) => {return obj.text}),
-              }
-          api.get("/metrics", {params: params})
-        .then(data => {
+      };
+      api.get("/run", { params: params }).then(data => {
+        let items = data.data.items;
+        // console.log(data);
+        this.isLoading = false;
+        let params = {
+          keywords: items.map(obj => {
+            return obj.text;
+          })
+        };
+        api.get("/metrics", { params: params }).then(data => {
           // this.data = data.data.items
-          this.items = Object.values(data.data.data)
+          this.items = Object.values(data.data.data);
           console.log(data);
           // this.isLoading = false
           // this.initForm()
         });
-          // let metrics = this.getMetrics(items.map((obj) => {return obj.text}));
+        // let metrics = this.getMetrics(items.map((obj) => {return obj.text}));
 
-          // console.log(metrics);
-          // // this.data = Object.values(metrics)
-          // this.data = metrics;
-          // // this.data.map((obj) => { const merged = {}});
-          // console.log(this.data);
-        });
+        // console.log(metrics);
+        // // this.data = Object.values(metrics)
+        // this.data = metrics;
+        // // this.data.map((obj) => { const merged = {}});
+        // console.log(this.data);
+      });
     },
-
-
 
     async getMetrics(keywords) {
       let params = {
-        keywords: keywords,
-      }
-      api
-        .get("/metrics", {params: params})
-        .then(data => {
-          // this.data = data.data.items
-          data = data.data.data
-          // console.log(data);
-          // this.isLoading = false
-          // this.initForm()
-        });
+        keywords: keywords
+      };
+      api.get("/metrics", { params: params }).then(data => {
+        // this.data = data.data.items
+        data = data.data.data;
+        // console.log(data);
+        // this.isLoading = false
+        // this.initForm()
+      });
     }
   },
   data() {
@@ -269,7 +301,7 @@ export default {
       seedKeyword: null,
       source: null,
       size: 20,
-      items: [], 
+      items: [],
       data: [],
       perPage: 20,
       currentPage: 1,
