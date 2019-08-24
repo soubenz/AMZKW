@@ -1,4 +1,9 @@
-scrapyrt:
+
+version: '3'
+services:
+
+  scrapyrt:
+    image: scrapyrt
     build: ./scrapy
     command: scrapyrt -i 0.0.0.0 -p 9080 -S manager.config
     ports:
@@ -7,3 +12,20 @@ scrapyrt:
       - ./scrapy:/data
     working_dir: /data
     restart: always
+    networks:
+      - backend
+
+  api:
+    image: express-api
+    build: ./api
+    networks:
+      - backend
+    ports:
+      - "3000:3000"
+    env_file:
+     - ./api/.env
+
+
+networks:
+  backend:
+    driver: bridge
