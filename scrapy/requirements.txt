@@ -1,0 +1,4 @@
+scrapy==1.6.0
+scrapy_webshare
+scrapyrt==0.10
+Twisted==18.9.0
