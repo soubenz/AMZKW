@@ -8,13 +8,13 @@ RUN apt-get update -qq && \
 
 
 RUN mkdir -p /app
-COPY . /app
 WORKDIR /app
 
 # COPY ./requirements.txt /app/requirements.txt
 
-# WORKDIR /app
+COPY . /app
+WORKDIR /app
 RUN pip3 install --no-cache-dir -r requirements.txt
 # ENV PYTHONPATH="$PYTHONPATH:/app"
+ENTRYPOINT ["scrapyrt", "-i", "0.0.0.0", "-S", "manager.config"]
 EXPOSE 9080
-# CMD ["scrapyrt", "-i", "0.0.0.0", "-S", "manager.config"]
